@@ -1,0 +1,17 @@
+symbol,year_str,sales,debt_to_equity,anomaly_reason
+ADANIPOWER,Mar 2018,20304,59.43194600674916,Extreme outlier detected in Net Profit Margin or Debt-to-Equity ratio
+BAJAJHLDNG,Mar 2013,337,0.0,Extreme outlier detected in Net Profit Margin or Debt-to-Equity ratio
+BAJAJHLDNG,Mar 2014,423,0.0,Extreme outlier detected in Net Profit Margin or Debt-to-Equity ratio
+BAJAJHLDNG,Mar 2015,524,0.0,Extreme outlier detected in Net Profit Margin or Debt-to-Equity ratio
+BAJAJHLDNG,Mar 2016,470,0.0,Extreme outlier detected in Net Profit Margin or Debt-to-Equity ratio
+BAJAJHLDNG,Mar 2017,842,0.0,Extreme outlier detected in Net Profit Margin or Debt-to-Equity ratio
+BAJAJHLDNG,Mar 2018,420,0.0,Extreme outlier detected in Net Profit Margin or Debt-to-Equity ratio
+BAJAJHLDNG,Mar 2019,431,0.0,Extreme outlier detected in Net Profit Margin or Debt-to-Equity ratio
+BAJAJHLDNG,Mar 2020,435,0.0060512192486402,Extreme outlier detected in Net Profit Margin or Debt-to-Equity ratio
+BAJAJHLDNG,Mar 2021,457,0.0036591600075335,Extreme outlier detected in Net Profit Margin or Debt-to-Equity ratio
+BAJAJHLDNG,Mar 2022,484,0.0026609401988702,Extreme outlier detected in Net Profit Margin or Debt-to-Equity ratio
+BAJAJHLDNG,Mar 2023,522,0.0021049296093431,Extreme outlier detected in Net Profit Margin or Debt-to-Equity ratio
+BAJAJHLDNG,Mar 2024,1702,0.0011613545449517,Extreme outlier detected in Net Profit Margin or Debt-to-Equity ratio
+LICI,Mar 2019,571508,332.59382716049384,Extreme outlier detected in Net Profit Margin or Debt-to-Equity ratio
+LICI,Mar 2020,628043,252.9081836327345,Extreme outlier detected in Net Profit Margin or Debt-to-Equity ratio
+NAUKRI,Mar 2022,1589,0.0037118663728105,Extreme outlier detected in Net Profit Margin or Debt-to-Equity ratio

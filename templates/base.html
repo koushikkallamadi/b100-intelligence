@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}B100 Intelligence Platform{% endblock %}</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Segoe UI', 'Outfit', sans-serif;
+            background-color: #F8F9FA;
+        }
+        .text-primary { color: #1F4E79; }
+        .bg-primary { background-color: #1F4E79; }
+        .bg-secondary-theme { background-color: #2E75B6; }
+        .border-primary { border-color: #1F4E79; }
+        .glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="flex flex-col min-h-screen text-slate-800">
+
+    <!-- Premium Navbar -->
+    <nav class="sticky top-0 z-50 shadow-sm glass border-b border-slate-200/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="flex-shrink-0 flex items-center space-x-2">
+                        <i class="fa-solid fa-chart-line text-2xl text-blue-600"></i>
+                        <span class="font-bold text-xl text-primary tracking-tight">Bluestock <span class="text-blue-600">B100</span></span>
+                    </div>
+                    <div class="hidden md:flex space-x-8 ml-10">
+                        <a href="/" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-slate-600 hover:border-blue-600 hover:text-slate-900 transition">Home</a>
+                        <a href="/companies/" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-slate-600 hover:border-blue-600 hover:text-slate-900 transition">Companies</a>
+                        <a href="/compare/" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-slate-600 hover:border-blue-600 hover:text-slate-900 transition">Compare</a>
+                        <a href="/screener/" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-slate-600 hover:border-blue-600 hover:text-slate-900 transition">Screener</a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/api/v1/schema/" class="text-xs text-slate-500 hover:text-slate-800 transition"><i class="fa-solid fa-code mr-1"></i>API Docs</a>
+                    <span class="text-slate-300">|</span>
+                    <span class="text-xs bg-emerald-100 text-emerald-800 px-2 py-1 rounded-full font-semibold"><i class="fa-solid fa-server mr-1"></i>Active</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Standard Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p class="text-sm font-medium text-slate-200">Bluestock Fintech — Nifty 100 Financial Intelligence Platform</p>
+            <p class="text-xs">Data as of: {% now "jS F Y" %}. For educational purposes only. Not financial advice.</p>
+            <p class="text-xs text-slate-600">&copy; 2026 Bluestock Fintech. All rights reserved. Intern Project Documentation.</p>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

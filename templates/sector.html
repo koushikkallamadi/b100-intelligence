@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}{{ sector_name }} Sector Analysis | Bluestock B100 Stock Intelligence{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div class="border-b border-slate-200 pb-4">
+        <h1 class="text-3xl font-bold text-primary">{{ sector_name }} Sector Overview</h1>
+        <p class="text-sm text-slate-500 mt-1">Fundamental summary of listed stock tickers representing the {{ sector_name }} industry group.</p>
+    </div>
+
+    <!-- Sector Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200/50 p-5 space-y-1">
+            <span class="text-xs text-slate-400 font-semibold uppercase block">Total Sector Companies</span>
+            <span class="text-2xl font-black text-primary">{{ companies|length }}</span>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200/50 p-5 space-y-1">
+            <span class="text-xs text-slate-400 font-semibold uppercase block">Average ROE</span>
+            <span class="text-2xl font-black text-emerald-600">{{ avg_roe|floatformat:1 }}%</span>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200/50 p-5 space-y-1">
+            <span class="text-xs text-slate-400 font-semibold uppercase block">Average ROCE</span>
+            <span class="text-2xl font-black text-blue-600">{{ avg_roce|floatformat:1 }}%</span>
+        </div>
+    </div>
+
+    <!-- Sector Companies List -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200/50 overflow-hidden">
+        <div class="p-5 border-b border-slate-100 flex justify-between items-center">
+            <h2 class="font-bold text-lg text-primary"><i class="fa-solid fa-layer-group mr-2"></i>Sector Constituents</h2>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
+                <thead class="bg-slate-50">
+                    <tr>
+                        <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Symbol</th>
+                        <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Company Name</th>
+                        <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">ROE (%)</th>
+                        <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">ROCE (%)</th>
+                        <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Book Value (₹)</th>
+                        <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider text-center">Health Rating</th>
+                        <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider text-center">Details</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 text-slate-700">
+                    {% for company in companies %}
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-6 py-4 whitespace-nowrap font-bold text-slate-900">{{ company.symbol }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap font-medium text-slate-800">{{ company.company_name }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right font-semibold text-slate-900">{{ company.roe_percentage }}%</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right font-semibold">{{ company.roce_percentage }}%</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right">₹{{ company.book_value }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center text-xs">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold {% if company.health_label == 'OUTPERFORM' %}bg-emerald-100 text-emerald-800{% elif company.health_label == 'STABLE' %}bg-blue-100 text-blue-800{% else %}bg-rose-100 text-rose-800{% endif %}">
+                                {{ company.health_label }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                            <a href="/company/{{ company.symbol }}/" class="text-blue-600 hover:text-blue-700 font-semibold transition">View Detail <i class="fa-solid fa-arrow-right ml-0.5"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

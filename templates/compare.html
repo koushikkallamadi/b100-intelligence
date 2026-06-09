@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Compare Companies | Bluestock B100 Stock Intelligence{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div class="border-b border-slate-200 pb-4">
+        <h1 class="text-3xl font-bold text-primary">Side-by-Side Metric Comparison</h1>
+        <p class="text-sm text-slate-500 mt-1">Select 2 to 4 companies to compare fundamental ratios and performance scores.</p>
+    </div>
+
+    <!-- Comparison selector form -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200/50 p-6">
+        <form method="GET" action="/compare/" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                {% for i in "1234" %}
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Company {{ i }}</label>
+                    <select name="c{{ i }}" class="w-full bg-slate-50 border border-slate-200 rounded-md py-2 px-3 text-slate-800 text-sm focus:outline-none focus:ring-1 focus:ring-blue-600">
+                        <option value="">-- Select Company --</option>
+                        {% for comp in all_companies %}
+                        <option value="{{ comp.symbol }}" {% if selected_symbols|slice:i|last == comp.symbol %}selected{% endif %}>
+                            {{ comp.symbol }} - {{ comp.company_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="flex justify-end">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 transition px-6 py-2 rounded-md font-semibold text-white shadow-md">
+                    <i class="fa-solid fa-scale-balanced mr-1.5"></i>Compare Selected
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Comparison Results Table -->
+    {% if comparison_data %}
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200/50 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
+                <thead class="bg-slate-50">
+                    <tr>
+                        <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Metric</th>
+                        {% for comp in comparison_data %}
+                        <th class="px-6 py-4 text-base font-bold text-primary">{{ comp.symbol }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 text-slate-700">
+                    <tr>
+                        <td class="px-6 py-3.5 font-semibold bg-slate-50/50 text-slate-500 text-xs uppercase">Company Name</td>
+                        {% for comp in comparison_data %}
+                        <td class="px-6 py-3.5 font-bold">{{ comp.company_name }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-3.5 font-semibold bg-slate-50/50 text-slate-500 text-xs uppercase">Sector</td>
+                        {% for comp in comparison_data %}
+                        <td class="px-6 py-3.5">{{ comp.sector_name }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-3.5 font-semibold bg-slate-50/50 text-slate-500 text-xs uppercase">Health Score</td>
+                        {% for comp in comparison_data %}
+                        <td class="px-6 py-3.5 font-extrabold text-blue-600">{{ comp.health_score|floatformat:1 }} / 100</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-3.5 font-semibold bg-slate-50/50 text-slate-500 text-xs uppercase">Health Label</td>
+                        {% for comp in comparison_data %}
+                        <td class="px-6 py-3.5">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold {% if comp.health_label == 'OUTPERFORM' %}bg-emerald-100 text-emerald-800{% elif comp.health_label == 'STABLE' %}bg-blue-100 text-blue-800{% else %}bg-rose-100 text-rose-800{% endif %}">
+                                {{ comp.health_label }}
+                            </span>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-3.5 font-semibold bg-slate-50/50 text-slate-500 text-xs uppercase">ROE (%)</td>
+                        {% for comp in comparison_data %}
+                        <td class="px-6 py-3.5 font-semibold">{{ comp.roe_percentage }}%</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-3.5 font-semibold bg-slate-50/50 text-slate-500 text-xs uppercase">ROCE (%)</td>
+                        {% for comp in comparison_data %}
+                        <td class="px-6 py-3.5 font-semibold">{{ comp.roce_percentage }}%</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-3.5 font-semibold bg-slate-50/50 text-slate-500 text-xs uppercase">Book Value (₹)</td>
+                        {% for comp in comparison_data %}
+                        <td class="px-6 py-3.5">₹{{ comp.book_value }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-3.5 font-semibold bg-slate-50/50 text-slate-500 text-xs uppercase">Face Value (₹)</td>
+                        {% for comp in comparison_data %}
+                        <td class="px-6 py-3.5">₹{{ comp.face_value }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-3.5 font-semibold bg-slate-50/50 text-slate-500 text-xs uppercase">Leverage (D/E)</td>
+                        {% for comp in comparison_data %}
+                        <td class="px-6 py-3.5 font-semibold">{{ comp.debt_to_equity|floatformat:2|default:"N/A" }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-3.5 font-semibold bg-slate-50/50 text-slate-500 text-xs uppercase">Operating Profit Margin (%)</td>
+                        {% for comp in comparison_data %}
+                        <td class="px-6 py-3.5">{{ comp.opm_percentage }}%</td>
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

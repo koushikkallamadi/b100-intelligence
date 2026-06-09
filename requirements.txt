@@ -1,0 +1,15 @@
+django>=4.2,<5.0
+djangorestframework
+drf-spectacular
+django-redis
+redis
+celery[redis]
+django-cors-headers
+bcrypt
+python-decouple
+pandas
+numpy
+sqlalchemy
+psycopg2-binary
+gunicorn
+whitenoise

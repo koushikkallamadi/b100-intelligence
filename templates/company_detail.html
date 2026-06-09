@@ -1,0 +1,348 @@
+{% extends "base.html" %}
+
+{% block title %}{{ company.symbol }} - {{ company.company_name }} | B100 Stock Intelligence{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    
+    <!-- 1. Company Profile Header Card -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200/50 p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div class="flex items-center space-x-6">
+            {% if company.company_logo %}
+            <img src="{{ company.company_logo }}" alt="Logo" class="w-16 h-16 rounded-xl object-contain border border-slate-200 p-1 bg-white">
+            {% else %}
+            <div class="w-16 h-16 rounded-xl bg-blue-50 flex items-center justify-center border border-blue-100 text-blue-600 font-bold text-2xl">
+                {{ company.symbol|slice:":2" }}
+            </div>
+            {% endif %}
+            <div class="space-y-1">
+                <div class="flex items-center space-x-3">
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-primary">{{ company.symbol }}</h1>
+                    <span class="text-xs bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold uppercase tracking-wider">{{ company.sector_name }}</span>
+                </div>
+                <h2 class="text-base text-slate-500 font-semibold">{{ company.company_name }}</h2>
+            </div>
+        </div>
+        
+        <!-- Profile Link Buttons -->
+        <div class="flex flex-wrap gap-2.5">
+            {% if company.website %}
+            <a href="{{ company.website }}" target="_blank" class="bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold py-2 px-4 rounded-lg transition flex items-center"><i class="fa-solid fa-globe mr-1.5"></i>Website</a>
+            {% endif %}
+            {% if company.nse_profile %}
+            <a href="{{ company.nse_profile }}" target="_blank" class="bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold py-2 px-4 rounded-lg transition flex items-center"><i class="fa-solid fa-building-columns mr-1.5"></i>NSE Profile</a>
+            {% endif %}
+            {% if company.chart_link %}
+            <a href="{{ company.chart_link }}" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold py-2 px-4 rounded-lg transition flex items-center shadow-sm"><i class="fa-solid fa-chart-line mr-1.5"></i>Technical Chart</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- 2. About & Pros / Cons Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- About -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200/50 p-6 lg:col-span-2 space-y-4">
+            <h3 class="text-lg font-bold text-primary border-b border-slate-100 pb-2"><i class="fa-solid fa-circle-info mr-2"></i>About the Company</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">{{ company.about_company|default:"No company description available." }}</p>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-slate-100">
+                <div class="space-y-1">
+                    <span class="text-xs text-slate-400 font-semibold block uppercase">Face Value</span>
+                    <span class="font-bold text-slate-900">₹{{ company.face_value }}</span>
+                </div>
+                <div class="space-y-1">
+                    <span class="text-xs text-slate-400 font-semibold block uppercase">Book Value</span>
+                    <span class="font-bold text-slate-900">₹{{ company.book_value }}</span>
+                </div>
+                <div class="space-y-1">
+                    <span class="text-xs text-slate-400 font-semibold block uppercase">ROCE (%)</span>
+                    <span class="font-bold text-slate-900">{{ company.roce_percentage }}%</span>
+                </div>
+                <div class="space-y-1">
+                    <span class="text-xs text-slate-400 font-semibold block uppercase">ROE (%)</span>
+                    <span class="font-bold text-slate-900">{{ company.roe_percentage }}%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pros & Cons -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200/50 p-6 space-y-4">
+            <h3 class="text-lg font-bold text-primary border-b border-slate-100 pb-2"><i class="fa-solid fa-list-check mr-2"></i>Pros & Cons</h3>
+            <div class="space-y-4 text-xs">
+                <!-- Pros -->
+                <div class="space-y-1.5">
+                    <h4 class="font-bold text-emerald-800 uppercase flex items-center"><i class="fa-solid fa-circle-plus mr-1.5"></i>Pros</h4>
+                    <p class="text-slate-600 leading-normal">{{ pros_cons.pros|default:"- Solid earnings record." }}</p>
+                </div>
+                <!-- Cons -->
+                <div class="space-y-1.5">
+                    <h4 class="font-bold text-rose-800 uppercase flex items-center"><i class="fa-solid fa-circle-minus mr-1.5"></i>Cons</h4>
+                    <p class="text-slate-600 leading-normal">{{ pros_cons.cons|default:"- High valuation relative to book value." }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. EIGHT Charts Visualization Grid (AJAX loaded) -->
+    <div>
+        <h3 class="text-xl font-bold text-primary mb-6 flex items-center"><i class="fa-solid fa-chart-pie mr-2"></i>Financial Visualization Models</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Chart 1: Revenue & Profit Trend -->
+            <div class="bg-white rounded-2xl border border-slate-200/50 p-5 shadow-sm space-y-3 lg:col-span-2">
+                <h4 class="text-sm font-bold text-primary"><i class="fa-solid fa-square-poll-vertical mr-1"></i>1. Revenue & Profit Trend</h4>
+                <div class="h-64 relative">
+                    <canvas id="chart1Canvas"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 8: Health Score Gauge (Speedometer) -->
+            <div class="bg-white rounded-2xl border border-slate-200/50 p-5 shadow-sm space-y-3 flex flex-col justify-between">
+                <h4 class="text-sm font-bold text-primary"><i class="fa-solid fa-gauge-high mr-1"></i>8. ML Health Score Speedometer</h4>
+                <div class="h-44 relative flex justify-center items-center">
+                    <canvas id="chart8Canvas"></canvas>
+                    <!-- Center Overlay text -->
+                    <div class="absolute text-center mt-8">
+                        <span id="scoreValText" class="text-3xl font-extrabold text-slate-800">--</span>
+                        <span class="text-xs font-semibold text-slate-400 block" id="scoreLabelText">STABLE</span>
+                    </div>
+                </div>
+                <div class="text-xs text-center text-slate-500">Recalculated via Celery beat pipeline</div>
+            </div>
+
+            <!-- Chart 2: Balance Sheet Composition -->
+            <div class="bg-white rounded-2xl border border-slate-200/50 p-5 shadow-sm space-y-3">
+                <h4 class="text-sm font-bold text-primary"><i class="fa-solid fa-align-left mr-1"></i>2. Balance Sheet Composition</h4>
+                <div class="h-64 relative">
+                    <canvas id="chart2Canvas"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 3: Cash Flow Waterfall -->
+            <div class="bg-white rounded-2xl border border-slate-200/50 p-5 shadow-sm space-y-3">
+                <h4 class="text-sm font-bold text-primary"><i class="fa-solid fa-watermr-1"></i>3. Cash Flow Overview</h4>
+                <div class="h-64 relative">
+                    <canvas id="chart3Canvas"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 4: EPS & Dividend History -->
+            <div class="bg-white rounded-2xl border border-slate-200/50 p-5 shadow-sm space-y-3">
+                <h4 class="text-sm font-bold text-primary"><i class="fa-solid fa-chart-line mr-1"></i>4. EPS & Dividend History</h4>
+                <div class="h-64 relative">
+                    <canvas id="chart4Canvas"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 5: Debt vs Equity -->
+            <div class="bg-white rounded-2xl border border-slate-200/50 p-5 shadow-sm space-y-3">
+                <h4 class="text-sm font-bold text-primary"><i class="fa-solid fa-chart-area mr-1"></i>5. Leverage: Debt vs Equity</h4>
+                <div class="h-64 relative">
+                    <canvas id="chart5Canvas"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 6: CAGR Radar -->
+            <div class="bg-white rounded-2xl border border-slate-200/50 p-5 shadow-sm space-y-3">
+                <h4 class="text-sm font-bold text-primary"><i class="fa-solid fa-spider mr-1"></i>6. Compounded Growth (CAGR) Radar</h4>
+                <div class="h-64 relative">
+                    <canvas id="chart6Canvas"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 7: Margin Trend -->
+            <div class="bg-white rounded-2xl border border-slate-200/50 p-5 shadow-sm space-y-3">
+                <h4 class="text-sm font-bold text-primary"><i class="fa-solid fa-lines-leaning mr-1"></i>7. Margins Comparison</h4>
+                <div class="h-64 relative">
+                    <canvas id="chart7Canvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const symbol = "{{ company.symbol }}";
+    
+    // Fetch chart dataset via AJAX
+    fetch(`/api/v1/companies/${symbol}/charts/`)
+        .then(response => response.json())
+        .then(data => {
+            renderCharts(data);
+        })
+        .catch(error => {
+            console.error("Error loading chart data:", error);
+        });
+
+    function renderCharts(data) {
+        // --- 1. Revenue & Profit Trend ---
+        new Chart(document.getElementById("chart1Canvas"), {
+            type: 'bar',
+            data: {
+                labels: data.chart1_revenue_profit.labels,
+                datasets: [
+                    {
+                        label: 'Sales (Cr)',
+                        data: data.chart1_revenue_profit.sales,
+                        backgroundColor: '#1F4E79',
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Net Profit (Cr)',
+                        data: data.chart1_revenue_profit.net_profit,
+                        backgroundColor: '#2ECC71',
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'OPM %',
+                        data: data.chart1_revenue_profit.opm,
+                        type: 'line',
+                        borderColor: '#E74C3C',
+                        backgroundColor: 'transparent',
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { type: 'linear', position: 'left' },
+                    y1: { type: 'linear', position: 'right', grid: { drawOnChartArea: false } }
+                }
+            }
+        });
+
+        // --- 2. Balance Sheet Composition ---
+        new Chart(document.getElementById("chart2Canvas"), {
+            type: 'bar',
+            data: {
+                labels: data.chart2_bs_composition.labels,
+                datasets: [
+                    { label: 'Equity + Reserves', data: data.chart2_bs_composition.equity, backgroundColor: '#2ECC71' },
+                    { label: 'Borrowings', data: data.chart2_bs_composition.borrowings, backgroundColor: '#E74C3C' },
+                    { label: 'Other Liabilities', data: data.chart2_bs_composition.liabilities, backgroundColor: '#F39C12' }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { x: { stacked: true }, y: { stacked: true } }
+            }
+        });
+
+        // --- 3. Cash Flow Waterfall ---
+        new Chart(document.getElementById("chart3Canvas"), {
+            type: 'bar',
+            data: {
+                labels: data.chart3_cashflow_waterfall.labels,
+                datasets: [
+                    { label: 'Operating Activity', data: data.chart3_cashflow_waterfall.operating, backgroundColor: '#2ECC71' },
+                    { label: 'Investing Activity', data: data.chart3_cashflow_waterfall.investing, backgroundColor: '#2E75B6' },
+                    { label: 'Financing Activity', data: data.chart3_cashflow_waterfall.financing, backgroundColor: '#F39C12' }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // --- 4. EPS & Dividend History ---
+        new Chart(document.getElementById("chart4Canvas"), {
+            type: 'line',
+            data: {
+                labels: data.chart4_eps_dividend.labels,
+                datasets: [
+                    { label: 'EPS (₹)', data: data.chart4_eps_dividend.eps, borderColor: '#1F4E79', backgroundColor: 'transparent' },
+                    { label: 'Dividend Payout (%)', data: data.chart4_eps_dividend.dividend, borderColor: '#F39C12', backgroundColor: 'transparent' }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // --- 5. Debt vs Equity ---
+        new Chart(document.getElementById("chart5Canvas"), {
+            type: 'line',
+            data: {
+                labels: data.chart5_debt_equity.labels,
+                datasets: [
+                    { label: 'Borrowings (Debt)', data: data.chart5_debt_equity.borrowings, borderColor: '#E74C3C', backgroundColor: 'rgba(231, 76, 60, 0.15)', fill: true },
+                    { label: 'Reserves (Equity)', data: data.chart5_debt_equity.reserves, borderColor: '#2ECC71', backgroundColor: 'rgba(46, 204, 113, 0.15)', fill: true }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // --- 6. CAGR Radar ---
+        new Chart(document.getElementById("chart6Canvas"), {
+            type: 'radar',
+            data: {
+                labels: data.chart6_cagr_radar.axes,
+                datasets: [
+                    { label: '10 Years', data: data.chart6_cagr_radar.series_10y, borderColor: '#1F4E79', backgroundColor: 'rgba(31, 78, 121, 0.1)' },
+                    { label: '5 Years', data: data.chart6_cagr_radar.series_5y, borderColor: '#2E75B6', backgroundColor: 'rgba(46, 117, 182, 0.1)' },
+                    { label: '3 Years', data: data.chart6_cagr_radar.series_3y, borderColor: '#F39C12', backgroundColor: 'rgba(243, 156, 18, 0.1)' }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // --- 7. Margin Trend ---
+        new Chart(document.getElementById("chart7Canvas"), {
+            type: 'line',
+            data: {
+                labels: data.chart7_margin_trend.labels,
+                datasets: [
+                    { label: 'OPM %', data: data.chart7_margin_trend.opm, borderColor: '#2E75B6', backgroundColor: 'transparent' },
+                    { label: 'NPM %', data: data.chart7_margin_trend.npm, borderColor: '#2ECC71', backgroundColor: 'transparent' }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // --- 8. Health Score Speedometer Gauge ---
+        const score = data.chart8_health_gauge.score;
+        document.getElementById("scoreValText").innerText = score.toFixed(1);
+        document.getElementById("scoreLabelText").innerText = data.chart8_health_gauge.label;
+
+        new Chart(document.getElementById("chart8Canvas"), {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [score, 100 - score],
+                    backgroundColor: [
+                        score > 70 ? '#2ECC71' : score > 45 ? '#F39C12' : '#E74C3C',
+                        '#E2E8F0'
+                    ],
+                    borderWidth: 0,
+                    circumference: 180,
+                    rotation: 270
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '80%',
+                plugins: { legend: { display: false } }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

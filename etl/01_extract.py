@@ -25,6 +25,6 @@ for file in files:
     df = pd.read_excel(xlsx_path, skiprows=1)
     df.to_csv(csv_path, index=False)
     
-    print(f"✅ {file}.xlsx → {file}.csv | Rows: {len(df)} | Columns: {list(df.columns)}")
+    print(f"[SUCCESS] {file}.xlsx -> {file}.csv | Rows: {len(df)} | Columns: {list(df.columns)}")
 
 print("\nDone! All files saved to data/clean/")
