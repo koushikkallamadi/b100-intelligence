@@ -1,2 +1,2 @@
 web: gunicorn bluestock.wsgi:application
-worker: celery -A bluestock worker -l info
+worker: celery -A bluestock worker -l info --concurrency=2
